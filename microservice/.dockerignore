@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Logs y datos temporales
+*.log
+logs/
+tmp/
+temp/
+
+# Archivos de prueba
+test_*.py
+tests/
+pytest_cache/
+
+# Documentación
+README.md
+docs/
+
+# Archivos de configuración local
+.env
+.env.local
+config.local.json
