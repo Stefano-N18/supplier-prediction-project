@@ -43,3 +43,13 @@ docs/
 .env
 .env.local
 config.local.json
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite
+.ipynb_checkpoints/
+.env
+.vscode/
+.git

@@ -1,27 +1,39 @@
-# Usar imagen oficial de Python
+# Imagen base
 FROM python:3.11-slim
 
-# Establecer directorio de trabajo
+# Recomendado para contenedores Python
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Directorio de trabajo
 WORKDIR /app
 
-# Instalar dependencias del sistema para scikit-learn
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
+# Dependencias del sistema (para scikit-learn)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar requirements primero (para optimizar cache de Docker)
+# Instalar dependencias de Python (aprovecha caché)
 COPY requirements.txt .
-
-# Instalar dependencias de Python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código de la aplicación
+# Copiar código de la app
 COPY app.py .
 COPY model_handler.py .
 
-# Exponer el puerto
-EXPOSE 8000
+# 👇 Copiar modelos entrenados (necesarios en runtime)
+COPY models ./models
 
-# Comando para ejecutar la aplicación
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+# (Opcional) Si tu app lee dataset local, descomenta:
+# COPY data ./data
+
+# (Opcional recomendado) Ejecutar como usuario no root
+RUN useradd -m appuser
+USER appuser
+
+# Cloud Run usa el puerto 8080
+EXPOSE 8080
+
+# Ejecutar FastAPI con Uvicorn en 0.0.0.0:8080
+# (app.py ya usa PORT si existe; aquí forzamos 8080 que es estándar en Cloud Run)
+CMD ["uvicorn","app:app","--host","0.0.0.0","--port","8080"]
